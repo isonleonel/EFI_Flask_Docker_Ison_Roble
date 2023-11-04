@@ -14,10 +14,6 @@ class CategorySchema(ma.Schema):
     class Meta:
         fields = ('id', 'name')
 
-class PostCategorySchema(ma.Schema):
-    post = fields.Nested('PostSchema', exclude=('categories',))
-    category = fields.Nested('CategorySchema')
-
 class CommentSchema(ma.Schema):
     class Meta:
         fields = ('id', 'content', 'date_created', 'post_id', 'user_id')
