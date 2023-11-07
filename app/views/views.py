@@ -22,7 +22,6 @@ from app.schemas.schema import (
     UserSchema,
     PostSchema,
     CategorySchema,
-    PostCategorySchema,
     CommentSchema
 )
 
@@ -118,3 +117,46 @@ class CategoryView(MethodView):
 
 app.add_url_rule('/category', view_func=CategoryView.as_view('category_api'))
 app.add_url_rule('/category/<int:category_id>', view_func=CategoryView.as_view('single_category_api'))
+
+class PostView(MethodView):
+    
+    def get(self, post_id=None):
+        if post_id is None:
+            posts = Post.query.all()
+            return PostSchema(many=True).jsonify(posts)
+        else:
+            post = Post.query.get_or_404(post_id)
+            return PostSchema().jsonify(post)
+    
+    def post(self):
+        try:
+            data = request.json
+            title = data.get('title')
+            content = data.get('content')
+            user_id = data.get('user_id')
+            category_names = data.get('categories', [])
+
+        
+            category_objects = []
+            for category_name in category_names:
+                category = Category.query.filter_by(name=category_name).first()
+                if category:
+                    category_objects.append(category)
+                else:
+                    return jsonify({'error': f'Categoría "{category_name}" no encontrada'}), 400
+
+            new_post = Post(title=title, content=content, user_id=user_id, categories=category_objects)
+            db.session.add(new_post)
+            db.session.commit()
+
+            return PostSchema().jsonify(new_post), 201
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': str(e)}), 400
+
+
+        
+
+app.add_url_rule('/posts', view_func=PostView.as_view('posts'))
+app.add_url_rule('/posts/<int:post_id>', view_func=PostView.as_view('single_post'))

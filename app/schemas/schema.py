@@ -1,5 +1,4 @@
 from app import ma
-from marshmallow import fields
 
 class UserSchema(ma.Schema):
     class Meta:
@@ -8,7 +7,7 @@ class UserSchema(ma.Schema):
     
 class PostSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'title', 'content', 'date_created', 'user_id')
+        fields = ('id', 'title', 'content', 'date_created', 'user_id', 'categories')
 
 class CategorySchema(ma.Schema):
     class Meta:
