@@ -7,7 +7,7 @@ class UserSchema(ma.Schema):
     
 class PostSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'title', 'content', 'date_created', 'user_id', 'categories')
+        fields = ('id', 'title', 'content', 'date_created', 'user_id')
 
 class CategorySchema(ma.Schema):
     class Meta:
